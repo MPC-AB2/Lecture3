@@ -24,6 +24,6 @@ keypoint detection
 4. Use the provided MATLAB function for evaluation of the stitching result and submit the output into the shared table. The function evalPanorama.p called as:
 `[PIQE,mError] = evalPanorama(panorama)`,
 has the following inputs and outputs:
-  a) panorama - initial panoramic image (provided)
-  b) PIQE - evaluation criterion of image quality (lower values, better result)
-  c) mError - mean error between your panoramic output image and ground truth image
+  * panorama - initial panoramic image (provided)
+  * PIQE - evaluation criterion of image quality (lower values, better result)
+  * mError - mean error between your panoramic output image and ground truth image
