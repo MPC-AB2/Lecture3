@@ -4,14 +4,15 @@ function [panorama_RGB] = kafickari(J,init_panorama)
 panorama_RGB = init_panorama;
 panorama = im2double(rgb2gray(panorama_RGB));
 
-threshold = 1000;
+threshold = 1500;
 
 
 %% detekce
 % detected_panorama = detectHarrisFeatures(panorama);
 % [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama);
-detected_panorama = detectSURFFeatures(panorama,"MetricThreshold",threshold);
-[features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','SURF');
+% detected_panorama = detectSURFFeatures(panorama,"MetricThreshold",threshold);
+detected_panorama = detectHarrisFeatures(panorama);
+[features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','KAZE');
 
 
 %   figure; imshow(panorama); hold on
@@ -27,11 +28,14 @@ valid_corners_H = cell(1, 8);
 
 for i=1:length(J)
     img_temp = im2double(rgb2gray(J{1,i}));
-    J_detected{1, i} = detectSURFFeatures(img_temp,"MetricThreshold",threshold);
-    [features{1, i}, valid_corners{1, i}] = extractFeatures(img_temp, J_detected{1, i},'Method','SURF');
+    
+    %J_detected{1, i} = detectSURFFeatures(img_temp,"MetricThreshold",threshold);
+    J_detected{1, i} = detectHarrisFeatures(img_temp);
+ 
+    [features{1, i}, valid_corners{1, i}] = extractFeatures(img_temp, J_detected{1, i},'Method','KAZE');
 
     J_detected_H{1, i} = detectHarrisFeatures(img_temp);
-    [features_H{1, i}, valid_corners_H{1, i}] = extractFeatures(img_temp, J_detected_H{1, i});
+    [features_H{1, i}, valid_corners_H{1, i}] = extractFeatures(img_temp, J_detected_H{1, i},'Method','KAZE');
 
 end
 %% Pair
@@ -47,8 +51,8 @@ while vektor_ind>0
         panorama = im2double(rgb2gray(panorama_RGB));
 %         detected_panorama = detectHarrisFeatures(panorama);
 %         [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama);
-        detected_panorama = detectSURFFeatures(panorama,"MetricThreshold",threshold);
-        [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','SURF');
+        detected_panorama = detectHarrisFeatures(panorama);
+        [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','KAZE');
             
         
         for i=1:length(vektor_ind)
@@ -65,7 +69,7 @@ while vektor_ind>0
         if maxim == 0
 %             max_ind = vektor_ind(1);
             detected_panorama = detectHarrisFeatures(panorama);
-            [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama);
+            [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','KAZE');
 
             for i=1:length(vektor_ind)
             % common points
@@ -90,12 +94,12 @@ while vektor_ind>0
         
         end
 
-        slope = matchedPoints1.Location(:,1) - matchedPoints2.Location(:,1) ./ matchedPoints1.Location(:,2) - matchedPoints2.Location(:,2);
-
-        
-        [B,outli] = rmoutliers(slope,'median');
-        index = find(slope==B(1));
-
+%         slope = matchedPoints1.Location(:,1) - matchedPoints2.Location(:,1) ./ matchedPoints1.Location(:,2) - matchedPoints2.Location(:,2);
+% 
+%         
+%         [B,outli] = rmoutliers(slope,'median');
+%         index = find(slope==B(1));
+        [~,index] = min(best);
 
         % replace panorama img with merged img and remove img
         point_panorama = round(matchedPoints1.Location(index,:));
@@ -105,17 +109,17 @@ while vektor_ind>0
         
         panorama_RGB(translation(2):translation(2)+size(J{1,max_ind},1)-1,translation(1):translation(1)+size(J{1,max_ind},2)-1, :) = J{1,max_ind};
         
-%         figure;
-%         imshow(panorama_RGB)
+        figure;
+        imshow(panorama_RGB)
  
         % remove marged img
         vektor_ind(vektor_ind == max_ind) = [];
 
 end
-
-        figure;
-        imshow(panorama_RGB)
-        title('PIQE = 35.0867, mError = 31.4691')
+% 
+%         figure;
+%         imshow(panorama_RGB)
+%         title('PIQE = 35.0867, mError = 31.4691')
 
 end
 
