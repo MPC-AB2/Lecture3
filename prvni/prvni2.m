@@ -51,6 +51,6 @@ else
     J = {J{1:index-1},J{index+1:end}};
 end
 
-merged_im = prvni(J, init_panorama);
+merged_im = prvni2(J, init_panorama);
 
 end
