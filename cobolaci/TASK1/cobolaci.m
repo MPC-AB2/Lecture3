@@ -12,10 +12,10 @@ step = 0;
 
 while step < NumOfIter;
 MP = {};
-
+tic;
         for i = 1:NumOfIter-step
-        pointsa = detectSIFTFeatures(rgb2gray(J{i}),'EdgeThreshold',1.3,'Sigma',1.3);
-        pointsb = detectSIFTFeatures(I_ref,'EdgeThreshold',1.3,'Sigma',1.3);
+        pointsa = detectSIFTFeatures(rgb2gray(J{i}),'EdgeThreshold',1.2,'Sigma',1.2);
+        pointsb = detectSIFTFeatures(I_ref,'EdgeThreshold',1.2,'Sigma',1.2);
         matchedPoints1 = [];
         matchedPoints2 = [];
         matchedPoints_all = [];
@@ -54,6 +54,7 @@ MP = {};
         
         
 step = step+1;
+toc
 end
 
 end

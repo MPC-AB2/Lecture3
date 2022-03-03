@@ -1,4 +1,3 @@
-function [I_ref_rgb] = cobolaci(J, init_panorama)
 
 MP = {};
 % load('image_splitted.mat');
@@ -11,11 +10,12 @@ NumOfIter = length(J);
 step = 0;
 
 while step < NumOfIter;
+    tic;
 MP = {};
 
         for i = 1:NumOfIter-step
-        pointsa = detectSIFTFeatures(rgb2gray(J{i}),'EdgeThreshold',1.3,'Sigma',1.3);
-        pointsb = detectSIFTFeatures(I_ref,'EdgeThreshold',1.3,'Sigma',1.3);
+        pointsa = detectSIFTFeatures(rgb2gray(J{i}),'EdgeThreshold',1.2,'Sigma',1.2);
+        pointsb = detectSIFTFeatures(I_ref,'EdgeThreshold',1.2,'Sigma',1.2);
         matchedPoints1 = [];
         matchedPoints2 = [];
         matchedPoints_all = [];
@@ -51,11 +51,10 @@ MP = {};
         I_ref(-t(2):-t(2)-1+size(J{MP_pos},1),-t(1):-t(1)-1+size(J{MP_pos},2)) = rgb2gray(J{MP_pos});
         I_ref_rgb(-t(2):-t(2)-1+size(J{MP_pos},1),-t(1):-t(1)-1+size(J{MP_pos},2),:) = J{MP_pos};
         J(MP_pos) = [];
-        
+        toc
         
 step = step+1;
 end
 
-end
 
 
