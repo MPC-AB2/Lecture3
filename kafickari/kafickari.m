@@ -4,11 +4,11 @@ function [panorama_RGB] = kafickari(J,init_panorama)
 panorama_RGB = init_panorama;
 panorama = im2double(rgb2gray(panorama_RGB));
 
-threshold = 3000;
+threshold = 1000;
 
 
 %% detekce
-% detected_panorama = detectKAZEFeatures(panorama);
+% detected_panorama = detectHarrisFeatures(panorama);
 % [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama);
 detected_panorama = detectSURFFeatures(panorama,"MetricThreshold",threshold);
 [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','SURF');
@@ -20,14 +20,18 @@ detected_panorama = detectSURFFeatures(panorama,"MetricThreshold",threshold);
 J_detected = cell(1, 8);
 features = cell(1, 8);
 valid_corners = cell(1, 8);
+
+J_detected_H = cell(1, 8);
+features_H = cell(1, 8);
+valid_corners_H = cell(1, 8);
+
 for i=1:length(J)
     img_temp = im2double(rgb2gray(J{1,i}));
     J_detected{1, i} = detectSURFFeatures(img_temp,"MetricThreshold",threshold);
     [features{1, i}, valid_corners{1, i}] = extractFeatures(img_temp, J_detected{1, i},'Method','SURF');
 
-%     J_detected{1, i} = detectKAZEFeatures(img_temp);
-%     [features{1, i}, valid_corners{1, i}] = extractFeatures(img_temp, J_detected{1, i});
-
+    J_detected_H{1, i} = detectHarrisFeatures(img_temp);
+    [features_H{1, i}, valid_corners_H{1, i}] = extractFeatures(img_temp, J_detected_H{1, i});
 
 end
 %% Pair
@@ -38,10 +42,10 @@ vektor_ind = 1:length(J);
 while vektor_ind>0
 
         
-        max = 0;
+        maxim = 0;
         max_ind = [];
         panorama = im2double(rgb2gray(panorama_RGB));
-%         detected_panorama = detectKAZEFeatures(panorama);
+%         detected_panorama = detectHarrisFeatures(panorama);
 %         [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama);
         detected_panorama = detectSURFFeatures(panorama,"MetricThreshold",threshold);
         [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama,'Method','SURF');
@@ -51,23 +55,46 @@ while vektor_ind>0
             % common points
             indexPairs = matchFeatures(features_panorama,features{1,vektor_ind(i)});
             % find max
-            if length(indexPairs)>max
-                max = length(indexPairs);
+            if length(indexPairs)>maxim
+                maxim = length(indexPairs);
                 max_ind = vektor_ind(i);
             end
         end
+
+
+        if maxim == 0
+%             max_ind = vektor_ind(1);
+            detected_panorama = detectHarrisFeatures(panorama);
+            [features_panorama, valid_corners_panorama] = extractFeatures(panorama, detected_panorama);
+
+            for i=1:length(vektor_ind)
+            % common points
+            indexPairs = matchFeatures(features_panorama,features_H{1,vektor_ind(i)});
+            % find max
+            if length(indexPairs)>maxim
+                maxim = length(indexPairs);
+                max_ind = vektor_ind(i);
+            end
+            end
+            [indexPairs_merging, best] = matchFeatures(features_panorama,features_H{1,max_ind});
+            matchedPoints1 = valid_corners_panorama(indexPairs_merging(:,1),:);
+            matchedPoints2 = valid_corners_H{1, max_ind}(indexPairs_merging(:,2),:);
+        else 
+
         
+
         % merge img: use one point
-        indexPairs_merging = matchFeatures(features_panorama,features{1,max_ind});
+        [indexPairs_merging, best] = matchFeatures(features_panorama,features{1,max_ind});
         matchedPoints1 = valid_corners_panorama(indexPairs_merging(:,1),:);
         matchedPoints2 = valid_corners{1, max_ind}(indexPairs_merging(:,2),:);
         
+        end
 
         slope = matchedPoints1.Location(:,1) - matchedPoints2.Location(:,1) ./ matchedPoints1.Location(:,2) - matchedPoints2.Location(:,2);
 
-
-[B,outli] = rmoutliers(slope,'median');
-index = find(slope==B(1));
+        
+        [B,outli] = rmoutliers(slope,'median');
+        index = find(slope==B(1));
 
 
         % replace panorama img with merged img and remove img
