@@ -24,7 +24,7 @@ keypoint detection
 4. Use the provided MATLAB function for evaluation of the stitching result and submit the output into the shared table. The function evalPanorama.p called as:
 `[PIQE,mError] = evalPanorama(panorama)`,
 has the following inputs and outputs:
-  * panorama - initial panoramic image (provided)
+  * panorama - variable with initial panoramic image (provided) including stitched patches (RGB, uint8, the size of the image must be the same!)
   * PIQE - evaluation criterion of image quality (lower values, better result)
   * mError - mean error between your panoramic output image and ground truth image
 5. Calculate above-mentioned evaluation criteria. Save one **TIFF** image showing the best achieved results of panorama and store your implemented algorithm as a form of function `[output_panorama] = TeamName( J, init_panorama)`. The function will be used for evaluation of universality of your solution using another input image. **Push** your program implementations into GitHub repository **Lecture3** using the **branch of your team** (stage changed -> fill commit message -> sign off -> commit -> push -> select *NAME_OF_YOUR_TEAM* branch -> push -> manager-core -> web browser -> fill your credentials).
