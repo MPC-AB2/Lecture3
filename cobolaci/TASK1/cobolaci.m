@@ -2,8 +2,8 @@ function [I_ref_rgb] = cobolaci(J, init_panorama)
 
 MP = {};
 % load('image_splitted.mat');
-I_ref = rgb2gray(imread('panorama.png'));
-I_ref_rgb = imread('panorama.png');
+% I_ref = rgb2gray(imread('panorama.png'));
+% I_ref_rgb = imread('panorama.png');
 I_ref = rgb2gray(init_panorama);
 I_ref_rgb = init_panorama;
 all_matched = 0;
