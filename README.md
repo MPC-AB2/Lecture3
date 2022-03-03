@@ -1,5 +1,4 @@
-# Lecture3
-keypoint detection and feature matching
+# Lecture3 - keypoint detection and feature matching
 
 ## Preparation
 
