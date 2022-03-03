@@ -94,11 +94,7 @@ while vektor_ind>0
         
         end
 
-%         slope = matchedPoints1.Location(:,1) - matchedPoints2.Location(:,1) ./ matchedPoints1.Location(:,2) - matchedPoints2.Location(:,2);
-% 
-%         
-%         [B,outli] = rmoutliers(slope,'median');
-%         index = find(slope==B(1));
+
         [~,index] = min(best);
 
         % replace panorama img with merged img and remove img
@@ -108,18 +104,18 @@ while vektor_ind>0
         translation = point_panorama - point_best_match;
         
         panorama_RGB(translation(2):translation(2)+size(J{1,max_ind},1)-1,translation(1):translation(1)+size(J{1,max_ind},2)-1, :) = J{1,max_ind};
-        
-        figure;
-        imshow(panorama_RGB)
+%         
+%         figure;
+%         imshow(panorama_RGB)
  
         % remove marged img
         vektor_ind(vektor_ind == max_ind) = [];
 
 end
-% 
-%         figure;
-%         imshow(panorama_RGB)
-%         title('PIQE = 35.0867, mError = 31.4691')
+
+        figure;
+        imshow(panorama_RGB)
+        title('PIQE = 35.0854, mError = 31.5599')
 
 end
 
