@@ -1,5 +1,7 @@
 # Lecture3 - KEYPOINT DETECTION AND MATCHING
 
+[**Benchmark Results**](https://moodle.vut.cz/pluginfile.php/405592/mod_resource/content/1/BenchmarkPanorama.xlsx%20-%20List1.pdf)
+
 ## Preparation
 
 1. Run Git bash.
